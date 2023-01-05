@@ -1,17 +1,17 @@
 <?php
-
+	require("config.php");
 	require __DIR__."/vendor/autoload.php";
 	use GuzzleHttp\Client;
 
-	$BIN_KEY = "4acde40497d4";
+	$BIN_KEY = BIN_KEY;
 
 	$client = new Client([
 		// Base URI is used with relative requests
 		// 'base_uri' => 'https://localhost/aza-explorers',
 		'base_uri' => 'https://json.extendsclass.com/bin/'.$BIN_KEY,
 		'headers' => [
-			'Security-key' => '12345',
-			'Api-key' => '3347f9ef-70a6-11ed-8b32-0242ac110002',
+			'Security-key' => SECURITY_KEY,
+			'Api-key' => API_KEY,
 		],
 		'timeout'  => 2.0,
 	]);
@@ -39,13 +39,14 @@
 	# echo "command:".$command."<br>";
 	
 	# Set connection properties for our database:
-	$sql_host = "btmyfdxxa6ko8xoeay9i-mysql.services.clever-cloud.com";	# Where our database is located
-	$sql_db = "btmyfdxxa6ko8xoeay9i";			# Name of our database
-	$sql_username = "ui5m1j8vfgyrjrii";		    # Login username for our database
-	$sql_password = "JLCyjTqzRAmqV5u41sEo";	    # Login password for our database
+	$sql_host = HOST;	# Where our database is located
+	$sql_db = DATABASE;			# Name of our database
+	$sql_username = USERNAME;		    # Login username for our database
+	$sql_password = PASSWORD;	    # Login password for our database
+	$port = 3306;
 	
 	# Set up our data in a format that PDO understands:
-	$dsn = "mysql:dbname=$sql_db;host=$sql_host;charset=utf8mb4;port=3306";
+	$dsn = "mysql:dbname=$sql_db;host=$sql_host;charset=utf8mb4;port=$port";
 	$pdo = null;
 	
 	try { # Attempt to connect:
