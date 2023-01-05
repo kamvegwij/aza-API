@@ -43,7 +43,7 @@
 	$sql_db = DATABASE;			# Name of our database
 	$sql_username = USERNAME;		    # Login username for our database
 	$sql_password = PASSWORD;	    # Login password for our database
-	$port = 3306;
+	$port = PORT;
 	
 	# Set up our data in a format that PDO understands:
 	$dsn = "mysql:dbname=$sql_db;host=$sql_host;charset=utf8mb4;port=$port";
