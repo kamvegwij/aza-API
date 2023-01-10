@@ -1,4 +1,8 @@
 <?php
+	// TODO
+	// Disable debugging mode
+	ini_set('display_errors', 1); // enable debugging and error display
+
 	require("config.php");
 	require __DIR__."/vendor/autoload.php";
 	use GuzzleHttp\Client;
@@ -56,7 +60,7 @@
 		# If something went wrong, return an error to Godot:
 		print_response([], "db_login_error");
 		die;
-	}	
+	}
 	
 	# Execute our Godot commands:
 	switch ($command){
@@ -86,8 +90,7 @@
 		case "get_user":
 			// check if all fields are set
 			if ( !isset($json_data['userID']) ) {
-				print_response([], "missing_userID");
-				die; // end connection
+				print_response([], "missing_userID"); // end connection
 			} 
 
 			$template = "SELECT * FROM `users` WHERE userID = :userID";
@@ -104,8 +107,7 @@
 		case "check_user":	
 			// check if all fields are set
 			if (!isset($json_data['username']) || !isset($json_data['password'])) {
-				print_response($json_data, "missing_username_or_password");
-				die; // end connection
+				print_response($json_data, "missing_username_or_password"); // end connection
 			} 
 			
 			$username = $json_data['username'];
@@ -122,8 +124,7 @@
 
 			// if the $result is False, username does not exist
 			if ( !$data ) {
-				print_response([], "invalid_username");
-				die; // end connection
+				print_response([], "invalid_username"); // end connection
 			} 
 
 			$hash_password = $data['password'];
@@ -160,15 +161,44 @@
 
 				$data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-				print_response([]);
+				print_response([]); // end connection
 			} catch (PDOException $ex) {
-				print_response([], $ex->getMessage());
-				die;
+				print_response([], $ex->getMessage()); // end connection
 			}
-		die; // end connection
 
-		case "add_level_one_data":
+		case "check_update":
 			// TODO		
+			// check for latest update (with highest updateID)
+			// update variables, identical to Database table setup
+			$max_id = null;
+
+			try {
+				$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$template = "SELECT MAX(updateID) AS max_id FROM updates";
+		
+				$stmt = $pdo->prepare($template);
+				$stmt->execute();
+		
+				$data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+				$max_id = $data['max_id'];
+			} catch (PDOException $ex) {
+				print_response([], $ex->getMessage()); // end connection
+			}
+
+			try {
+				$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$template = "SELECT * FROM `updates` WHERE updateID = :max_id";
+		
+				$stmt = $pdo->prepare($template);
+				$stmt->execute(["max_id" => $max_id]);
+		
+				$data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+				print_response($data);
+			} catch (PDOException $ex) {
+				print_response([], $ex->getMessage()); // end connection
+			}
 		die;
 
 		case "update_level_one_data":
